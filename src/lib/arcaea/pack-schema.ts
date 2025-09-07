@@ -9,6 +9,7 @@ export const PackMetadataSchema = z.object({
   plus_character: z.number().int().min(-1).optional(),
   name_localized: LocalizedRecord(z.string()),
   description_localized: LocalizedRecord(z.string()).optional(),
+  img: z.string().optional(),
 });
 
 export const PackListSchema = z.object({

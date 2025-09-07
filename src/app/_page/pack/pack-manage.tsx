@@ -15,8 +15,11 @@ export function PackManage() {
   const [metadata, setMetadata] = useState<PackMetadata>({
     id: "ab2025s1",
     section: "free",
+    plus_character: -1,
+    img: "select_ab2025s1.png",
+    custom_banner: false,
     name_localized: {
-      en: "Anonymous Battle 2025 S1",
+      en: "Anonymous Battle",
     },
   });
 
