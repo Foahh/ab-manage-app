@@ -91,23 +91,38 @@ export const SongMetadataSchema = z.object({
   source_copyright: z.string().optional(),
   no_stream: z.boolean().optional(),
   additional_files: z.array(AdditionalFile).optional(),
-  difficulties: z.array(Difficulty).transform((difficulties) => {
-    const present = new Set(difficulties.map((d) => d.ratingClass));
-    const result = [...difficulties];
+  difficulties: z
+    .array(Difficulty)
+    .transform((difficulties) => {
+      const present = new Set(difficulties.map((d) => d.ratingClass));
+      const result = [...difficulties];
 
-    [0, 1, 2].forEach((ratingClass) => {
-      if (!present.has(ratingClass)) {
-        result.push({
-          ratingClass: ratingClass as RatingClass,
-          chartDesigner: "",
-          jacketDesigner: "",
-          rating: -1,
-        });
-      }
-    });
+      [0, 1, 2].forEach((ratingClass) => {
+        if (!present.has(ratingClass)) {
+          result.push({
+            ratingClass: ratingClass as RatingClass,
+            chartDesigner: "",
+            jacketDesigner: "",
+            rating: -1,
+          });
+        }
+      });
 
-    return result.sort((a, b) => a.ratingClass - b.ratingClass);
-  }),
+      return result.sort((a, b) => a.ratingClass - b.ratingClass);
+    })
+    .refine(
+      (difficulties) => {
+        const shown = new Set<RatingClass>();
+        for (const difficult of difficulties) {
+          if (shown.has(difficult.ratingClass)) {
+            return false;
+          }
+          shown.add(difficult.ratingClass);
+        }
+        return true;
+      },
+      { error: "存在多个相同的难度" }
+    ),
 });
 
 export const SongListSchema = z.object({
