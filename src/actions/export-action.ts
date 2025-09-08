@@ -126,6 +126,7 @@ function updateStandardMetadata(
 }
 
 async function buildFileMap(
+  packMetadata: PackMetadata,
   updated: SongMetadata[],
   originalMap: Map<SongMetadata, SongMetadata>,
   exportDir: string,
@@ -188,6 +189,11 @@ async function buildFileMap(
     }
   }
 
+  const sourcePackPath = path.join(assetsDir, "select.png");
+  const targetPackPath = path.join(songsExportPath, "pack", `select_${packMetadata.id}.png`);
+  map.set(sourcePackPath, [targetPackPath]);
+
+
   return map;
 }
 
@@ -249,6 +255,7 @@ export async function exportPack(options: ExportPackOptions) {
   }
 
   const fileMap = await buildFileMap(
+    options.packMeta,
     updated,
     originalMap,
     exportDir,
