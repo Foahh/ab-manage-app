@@ -1,17 +1,17 @@
 ﻿"use client";
 
-import type { ColDef, RowSelectionOptions } from "ag-grid-community";
+import type { ColDef } from "ag-grid-community";
 import type { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
 import { Pen, Trash } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { Song } from "@/actions/song-action";
-import { DeleteSongDialog } from "@/app/_page/song/delete-song-dialog";
-import { UpsertSongDialog } from "@/app/_page/song/upsert-song-dialog";
 import Grid from "@/components/grid/ag-grid";
 import {
   ChartDesignerCellRenderer,
   ChartDifficultyCellRenderer,
 } from "@/components/grid/chart-cell-renderer";
+import { DeleteSongDialog } from "@/components/page/song/delete-song-dialog";
+import { UpsertSongDialog } from "@/components/page/song/upsert-song-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useAllSongsQuery } from "@/hooks/query";
@@ -82,8 +82,8 @@ export function SongManage() {
         comparator: (
           vA: SongMetadata,
           vB: SongMetadata,
-          nA,
-          nB,
+          _nA,
+          _nB,
           isDescending,
         ) => {
           const maxA = Math.max(

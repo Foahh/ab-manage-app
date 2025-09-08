@@ -5,8 +5,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { exportPack } from "@/actions/export-action";
 import { txQuestionnaire } from "@/actions/tx-questionnaire-action";
-import { QuestionnaireDialog } from "@/app/_page/pack/questionnaire-dialog";
 import { JsonEditor } from "@/components/inputs/json-editor";
+import { QuestionnaireDialog } from "@/components/page/pack/questionnaire-dialog";
 import { Button } from "@/components/ui/button";
 import {
   type PackMetadata,

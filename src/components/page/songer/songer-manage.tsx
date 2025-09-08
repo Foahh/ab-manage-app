@@ -1,17 +1,16 @@
 ﻿"use client";
 
 import { useMutation } from "@tanstack/react-query";
-import type { ColDef, RowSelectionOptions } from "ag-grid-community";
+import type { ColDef } from "ag-grid-community";
 import type { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
 import { Pen, Trash } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { randomAssignSongers } from "@/actions/random-songer-action";
-import type { Song } from "@/actions/song-action";
 import type { Songer } from "@/actions/songer-action";
-import { DeleteSongerDialog } from "@/app/_page/songer/delete-songer-dialog";
-import { UpsertSongerDialog } from "@/app/_page/songer/upsert-songer-dialog";
 import Grid from "@/components/grid/ag-grid";
+import { DeleteSongerDialog } from "@/components/page/songer/delete-songer-dialog";
+import { UpsertSongerDialog } from "@/components/page/songer/upsert-songer-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {

@@ -1,12 +1,12 @@
 "use client";
 
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { PackManage } from "@/app/_page/pack/pack-manage";
-import { SongManage } from "@/app/_page/song/song-manage";
-import { SongerManage } from "@/app/_page/songer/songer-manage";
-import { UserManage } from "@/app/_page/user/user-manage";
+import { PackManage } from "@/components/page/pack/pack-manage";
+import { SongManage } from "@/components/page/song/song-manage";
+import { SongerManage } from "@/components/page/songer/songer-manage";
+import { UserManage } from "@/components/page/user/user-manage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getCookie, setCookie } from "@/lib/cookie-util";
 
 const LAST_TAB_COOKIE = "lastActiveTab";
 const DEFAULT_TAB = "users";
@@ -15,7 +15,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<string>(DEFAULT_TAB);
 
   useEffect(() => {
-    const savedTab = getCookie(LAST_TAB_COOKIE);
+    const savedTab = Cookies.get(LAST_TAB_COOKIE);
     if (savedTab) {
       setActiveTab(savedTab);
     }
@@ -23,7 +23,7 @@ export default function Home() {
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    setCookie(LAST_TAB_COOKIE, value);
+    Cookies.set(LAST_TAB_COOKIE, value);
   };
 
   return (
