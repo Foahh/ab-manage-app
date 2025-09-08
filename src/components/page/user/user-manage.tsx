@@ -59,7 +59,7 @@ export function UserManage() {
 
   const columnDefs: ColDef<User>[] = useMemo(
     () => [
-      { headerName: "ID", field: "id", width: 50 },
+      { headerName: "ID", field: "id", width: 100 },
       { headerName: "昵称", field: "name", flex: 1, editable: true },
       { headerName: "联系方式", field: "contact", flex: 1, editable: true },
       {

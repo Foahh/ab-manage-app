@@ -79,8 +79,12 @@ function updateMysteryBoxMetadata(
   metas: SongMetadata[],
   packId: string,
 ) {
-  const originalMap: Map<SongMetadata, SongMetadata> = new Map();
   const updated: SongMetadata[] = structuredClone(metas);
+
+  const originalMap: Map<SongMetadata, SongMetadata> = new Map();
+  for (let i = 0; i < updated.length; i++) {
+    originalMap.set(updated[i], metas[i]);
+  }
 
   updated.sort((a, b) => {
     const orderA = metaOrders[a.id] ?? Number.MAX_SAFE_INTEGER;
@@ -223,9 +227,7 @@ async function copyMappedFiles(fileMap: Map<string, string[]>) {
 }
 
 export async function exportPack(options: ExportPackOptions) {
-  const exportDir = options.mysteryBox
-    ? `${dataDir}/export/mystery`
-    : `${dataDir}/export/standard`;
+  const exportDir = options.mysteryBox ? `export/mystery` : `export/standard`;
   const songsExportPath = path.join(exportDir, "songs");
 
   const songs = await db.select().from(songsTable);

@@ -1,10 +1,14 @@
 ﻿"use client";
 
+import { useMutation } from "@tanstack/react-query";
 import type { ColDef } from "ag-grid-community";
 import type { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
 import { Pen, Trash } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
+import { randomMysteryOrder } from "@/actions/random-order-action";
 import type { Song } from "@/actions/song-action";
+import { deleteSonger } from "@/actions/songer-action";
 import Grid from "@/components/grid/ag-grid";
 import {
   ChartDesignerCellRenderer,
@@ -44,6 +48,17 @@ export function SongManage() {
     refetch: refetchSong,
   } = useAllSongsQuery();
 
+  const { mutate: randomMutate, isPending: isRandomPending } = useMutation({
+    mutationFn: randomMysteryOrder,
+    onSuccess: async () => {
+      await refetchSong();
+    },
+    onError: (error) => {
+      toast.error("随机失败。");
+      console.error(error);
+    },
+  });
+
   const actionCellRenderer = useCallback(
     (params: CustomCellRendererProps<Song>) => (
       <div className="flex gap-1.5 w-full h-full justify-center items-center">
@@ -69,7 +84,8 @@ export function SongManage() {
 
   const columnDefs: ColDef<Song>[] = useMemo(
     () => [
-      { headerName: "ID", field: "id", width: 50 },
+      { headerName: "ID", field: "id", width: 100 },
+      { headerName: "OD", field: "mysteryOrder", width: 100 },
       {
         headerName: "歌曲 ID",
         field: "metadata.id",
@@ -128,6 +144,13 @@ export function SongManage() {
       <header className="flex items-center space-x-2 border-2 p-2 rounded-xl">
         <Button onClick={openAddDialog} variant="default">
           新增歌曲
+        </Button>
+        <Button
+          onClick={() => randomMutate()}
+          disabled={isRandomPending}
+          variant="default"
+        >
+          随机顺位
         </Button>
       </header>
 

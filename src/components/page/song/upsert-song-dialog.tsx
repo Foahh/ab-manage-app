@@ -20,11 +20,13 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { SongMetadataSchema } from "@/lib/arcaea/song-schema";
 
 type UpsertSongDialogProps = {
@@ -44,8 +46,9 @@ export function UpsertSongDialog({
     () => ({
       metadata: initial?.metadata ?? {},
       isBonus: initial?.isBonus ?? false,
+      mysteryOrder: initial?.mysteryOrder ?? 0,
     }),
-    [initial?.metadata, initial?.isBonus],
+    [initial?.metadata, initial?.isBonus, initial?.mysteryOrder],
   );
 
   const form = useForm<z.infer<typeof SongUpdateSchema>>({
@@ -97,6 +100,24 @@ export function UpsertSongDialog({
                 schema={SongMetadataSchema}
                 name="metadata"
                 label="歌曲信息"
+              />
+              <FormField
+                control={form.control}
+                name="mysteryOrder"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>盲盒顺位</FormLabel>
+                    <FormDescription>数值越小越靠前</FormDescription>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="请输入神秘谱面顺序"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
               <FormField
                 control={form.control}
