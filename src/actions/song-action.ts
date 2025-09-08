@@ -1,6 +1,6 @@
 ﻿"use server";
 
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { IdSchema } from "@/actions/schemas/common-action-schema";
 import {
   SongCreateSchema,
@@ -41,4 +41,14 @@ export async function deleteSong(songId: number) {
   await db.delete(songsTable).where(eq(songsTable.id, songId));
 
   return { success: true };
+}
+
+export async function getNextMysteryOrder() {
+  const result = await db
+    .select()
+    .from(songsTable)
+    .orderBy(desc(songsTable.mysteryOrder))
+    .limit(1);
+
+  return (result[0]?.mysteryOrder || 0) + 1;
 }

@@ -32,7 +32,7 @@ import { SongMetadataSchema } from "@/lib/arcaea/song-schema";
 type UpsertSongDialogProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  initial: Song | null;
+  initial: Partial<Song> | null;
   onSuccess?: () => void;
 };
 
@@ -65,7 +65,7 @@ export function UpsertSongDialog({
 
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof SongUpdateSchema>) =>
-      initial ? editSong(initial.id, data) : addSong(data),
+      initial?.id ? editSong(initial.id, data) : addSong(data),
     onSuccess: () => {
       toast.success(initial ? "歌曲信息已更新。" : "已创建歌曲。");
       setOpen(false);

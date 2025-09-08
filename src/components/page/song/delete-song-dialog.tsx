@@ -15,7 +15,7 @@ import {
 type DeleteSongDialogProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  song: Song;
+  song: Partial<Song> & Pick<Song, "id" | "metadata">;
   onSuccess?: () => void;
 };
 

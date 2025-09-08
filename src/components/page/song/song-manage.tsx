@@ -7,7 +7,7 @@ import { Pen, Trash } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { randomMysteryOrder } from "@/actions/random-order-action";
-import type { Song } from "@/actions/song-action";
+import { getNextMysteryOrder, type Song } from "@/actions/song-action";
 import { deleteSonger } from "@/actions/songer-action";
 import Grid from "@/components/grid/ag-grid";
 import {
@@ -22,18 +22,16 @@ import { useAllSongsQuery } from "@/hooks/query";
 import type { SongMetadata } from "@/lib/arcaea/song-schema";
 
 export function SongManage() {
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [upsertDialogOpen, setUpsertDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedSong, setSelectedSong] = useState<Song | null>(null);
+  const [selectedSong, setSelectedSong] = useState<Partial<Song> | null>(null);
 
-  const openAddDialog = useCallback(() => {
-    setSelectedSong(null);
-    setEditDialogOpen(true);
-  }, []);
-
-  const openEditDialog = useCallback((song?: Song) => {
-    setSelectedSong(song ?? null);
-    setEditDialogOpen(true);
+  const openUpsertDialog = useCallback(async (song?: Song) => {
+    const newSong = song ?? {
+      mysteryOrder: await getNextMysteryOrder(),
+    };
+    setSelectedSong(newSong);
+    setUpsertDialogOpen(true);
   }, []);
 
   const openDeleteDialog = useCallback((song?: Song) => {
@@ -65,7 +63,7 @@ export function SongManage() {
         <Button
           className="size-8"
           disabled={!params.data}
-          onClick={() => openEditDialog(params.data)}
+          onClick={() => openUpsertDialog(params.data)}
         >
           <Pen />
         </Button>
@@ -79,7 +77,7 @@ export function SongManage() {
         </Button>
       </div>
     ),
-    [openEditDialog, openDeleteDialog],
+    [openUpsertDialog, openDeleteDialog],
   );
 
   const columnDefs: ColDef<Song>[] = useMemo(
@@ -142,7 +140,7 @@ export function SongManage() {
   return (
     <section className="mx-2 space-y-2">
       <header className="flex items-center space-x-2 border-2 p-2 rounded-xl">
-        <Button onClick={openAddDialog} variant="default">
+        <Button onClick={() => openUpsertDialog()} variant="default">
           新增歌曲
         </Button>
         <Button
@@ -172,17 +170,17 @@ export function SongManage() {
       )}
 
       <UpsertSongDialog
-        open={editDialogOpen}
-        setOpen={setEditDialogOpen}
+        open={upsertDialogOpen}
+        setOpen={setUpsertDialogOpen}
         initial={selectedSong}
         onSuccess={refetchSong}
       />
 
-      {selectedSong && (
+      {selectedSong && selectedSong.id && selectedSong.metadata && (
         <DeleteSongDialog
           open={deleteDialogOpen}
           setOpen={setDeleteDialogOpen}
-          song={selectedSong}
+          song={selectedSong as any}
           onSuccess={refetchSong}
         />
       )}
