@@ -1,8 +1,8 @@
 ﻿import { integer, pgEnum, pgTable, primaryKey } from "drizzle-orm/pg-core";
+import { SongerRoles } from "@/actions/schemas/songer-action-schema";
 import timestampTableColumns from "@/db/schemas/columns/timestamp-column";
 import { songsTable } from "@/db/schemas/songs-table";
 import { usersTable } from "@/db/schemas/users-table";
-import { SongerRoles } from "@/actions/schemas/songer-action-schema";
 
 export const SongerRoleEnum = pgEnum("songer_role", SongerRoles);
 

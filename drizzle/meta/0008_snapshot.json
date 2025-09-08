@@ -48,12 +48,8 @@
           "name": "songer_songId_songs_id_fk",
           "tableFrom": "songer",
           "tableTo": "songs",
-          "columnsFrom": [
-            "songId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["songId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -61,12 +57,8 @@
           "name": "songer_userId_users_id_fk",
           "tableFrom": "songer",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -74,10 +66,7 @@
       "compositePrimaryKeys": {
         "songer_songId_userId_pk": {
           "name": "songer_songId_userId_pk",
-          "columns": [
-            "songId",
-            "userId"
-          ]
+          "columns": ["songId", "userId"]
         }
       },
       "uniqueConstraints": {},
@@ -216,11 +205,7 @@
     "public.songer_role": {
       "name": "songer_role",
       "schema": "public",
-      "values": [
-        "real",
-        "fake_assigned",
-        "fake_random"
-      ]
+      "values": ["real", "fake_assigned", "fake_random"]
     }
   },
   "schemas": {},

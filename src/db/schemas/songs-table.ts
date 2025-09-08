@@ -6,5 +6,6 @@ export const songsTable = pgTable("songs", {
   id: integer().primaryKey().generatedAlwaysAsIdentity().notNull(),
   metadata: json().$type<SongMetadata>().notNull(),
   isBonus: boolean().notNull().default(false),
+  mysteryOrder: integer().notNull().default(0),
   ...timestampTableColumns,
 });

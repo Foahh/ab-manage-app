@@ -74,19 +74,19 @@ async function validateChartFiles(metas: SongMetadata[]) {
   }
 }
 
-function updateMysteryBoxMetadata(metas: SongMetadata[], packId: string) {
+function updateMysteryBoxMetadata(
+  metaOrders: Record<string, number>,
+  metas: SongMetadata[],
+  packId: string,
+) {
+  const originalMap: Map<SongMetadata, SongMetadata> = new Map();
   const updated: SongMetadata[] = structuredClone(metas);
 
-  const originalMap: Map<SongMetadata, SongMetadata> = new Map();
-
-  for (let i = 0; i < updated.length; i++) {
-    originalMap.set(updated[i], metas[i]);
-  }
-
-  for (let i = updated.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [updated[i], updated[j]] = [updated[j], updated[i]];
-  }
+  updated.sort((a, b) => {
+    const orderA = metaOrders[a.id] ?? Number.MAX_SAFE_INTEGER;
+    const orderB = metaOrders[b.id] ?? Number.MAX_SAFE_INTEGER;
+    return orderA - orderB;
+  });
 
   const pads = metas.length.toString().length;
   for (let idx = 0; idx < updated.length; idx++) {
@@ -190,9 +190,12 @@ async function buildFileMap(
   }
 
   const sourcePackPath = path.join(assetsDir, "select.png");
-  const targetPackPath = path.join(songsExportPath, "pack", `select_${packMetadata.id}.png`);
+  const targetPackPath = path.join(
+    songsExportPath,
+    "pack",
+    `select_${packMetadata.id}.png`,
+  );
   map.set(sourcePackPath, [targetPackPath]);
-
 
   return map;
 }
@@ -242,7 +245,16 @@ export async function exportPack(options: ExportPackOptions) {
 
   if (options.mysteryBox) {
     console.log("Mystery Box mode enabled...");
+    const metaOrders = songs.reduce(
+      (acc, song) => {
+        acc[song.metadata.id] = song.mysteryOrder;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
     ({ updated, originalMap } = updateMysteryBoxMetadata(
+      metaOrders,
       metas,
       options.packMeta.id,
     ));

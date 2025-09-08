@@ -1,6 +1,6 @@
 {
-  "id": "6dc95963-8b8f-43eb-b85e-6f856c810634",
-  "prevId": "169f58b9-503a-4dd1-a73c-7d2d18247b49",
+  "id": "daeb4d8a-f0a1-46cf-b81a-ebc14ac64dc2",
+  "prevId": "cf6c5bd4-09b8-4db0-baff-ad8cbaf26447",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -108,6 +108,13 @@
           "notNull": true,
           "default": false
         },
+        "mysteryOrder": {
+          "name": "mysteryOrder",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
@@ -165,8 +172,8 @@
           "notNull": true,
           "default": false
         },
-        "qq": {
-          "name": "qq",
+        "contact": {
+          "name": "contact",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false

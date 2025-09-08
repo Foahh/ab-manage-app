@@ -2,8 +2,8 @@
 
 import type { CustomCellRendererProps } from "ag-grid-react";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import type { SongMetadata } from "@/lib/arcaea/song-schema";
+import { cn } from "@/lib/utils";
 
 export const difficultyColors = [
   "bg-green-100 text-green-800 border-green-200",
