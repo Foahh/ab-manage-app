@@ -232,12 +232,6 @@ export async function exportPack(options: ExportPackOptions) {
 
   const songs = await db.select().from(songsTable);
   const metas = songs.map((s) => s.metadata);
-
-  if (await exists(exportDir)) {
-    await fs.rm(exportDir, { recursive: true, force: true });
-  }
-
-  await fs.mkdir(exportDir, { recursive: true });
   await validateSongFolders(metas);
   await validateChartFiles(metas);
 
@@ -276,6 +270,11 @@ export async function exportPack(options: ExportPackOptions) {
     songsExportPath,
     options.mysteryBox,
   );
+
+  if (await exists(exportDir)) {
+    await fs.rm(exportDir, { recursive: true, force: true });
+  }
+  await fs.mkdir(exportDir, { recursive: true });
 
   const copiedFiles = await copyMappedFiles(fileMap);
   const songlistPath = path.join(songsExportPath, "songlist");
