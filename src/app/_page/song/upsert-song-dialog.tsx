@@ -1,6 +1,4 @@
-﻿"use client";
-
-import { zodResolver } from "@hookform/resolvers/zod";
+﻿import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
@@ -9,7 +7,6 @@ import type { z } from "zod";
 import { SongUpdateSchema } from "@/actions/schemas/song-action-schema";
 import { addSong, editSong, type Song } from "@/actions/song-action";
 import { JsonField } from "@/components/form/json-field";
-import { RoleSelect } from "@/components/inputs/role-select";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {

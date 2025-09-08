@@ -2,6 +2,7 @@
 import { IdSchema } from "@/actions/schemas/common-action-schema";
 
 export const SongerRoles = ["real", "fake_assigned", "fake_random"] as const;
+
 export const SongerRoleEnum = z.enum(SongerRoles);
 
 export const SongerCreateSchema = z.object({

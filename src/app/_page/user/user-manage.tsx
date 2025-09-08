@@ -1,6 +1,4 @@
-﻿"use client";
-
-import type { CellValueChangedEvent, ColDef } from "ag-grid-community";
+﻿import type { CellValueChangedEvent, ColDef } from "ag-grid-community";
 import type { AgGridReact } from "ag-grid-react";
 import { Pen, Trash } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";

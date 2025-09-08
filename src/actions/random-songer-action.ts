@@ -5,14 +5,7 @@ import { db } from "@/db";
 import { songerTable } from "@/db/schemas/songer-table";
 import { songsTable } from "@/db/schemas/songs-table";
 import { usersTable } from "@/db/schemas/users-table";
-
-function shuffle<T>(arr: T[]) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
+import { shuffle } from "@/lib/shuffle";
 
 const minSongers = 4;
 
@@ -21,33 +14,19 @@ export async function randomAssignSongers() {
     throw new Error("minSongers must be > 0");
   }
 
-  let [songs, users, songers] = await Promise.all([
+  const [songs, users, songers] = await Promise.all([
     db.select().from(songsTable).where(eq(songsTable.isBonus, false)),
-    db
-      .select()
-      .from(usersTable)
-      .where(
-        and(
-          eq(usersTable.isJammer, false),
-          inArray(
-            usersTable.id,
-            db
-              .select({ userId: songerTable.userId })
-              .from(songerTable)
-              .where(eq(songerTable.role, "real")),
-          ),
-        ),
-      ),
+    db.select().from(usersTable),
     db.select().from(songerTable),
   ]);
 
-  const participants = new Set(
-    songers.filter((s) => s.role === "real").map((s) => s.userId),
-  );
+  const participants = users
+    .filter((u) => !u.isJammer)
+    .filter((u) => {
+      return songers.some((s) => s.userId === u.id && s.role === "real");
+    });
 
-  users = users.filter((u) => participants.has(u.id));
-
-  if (users.length === 0) {
+  if (participants.length === 0) {
     throw new Error("No users available to assign as songers");
   }
 
@@ -79,14 +58,14 @@ export async function randomAssignSongers() {
     }
     const getCount = (uid: number) => userCounts.get(uid) || 0;
 
-    const songsToProcess = shuffle([...songs]);
+    shuffle(songs);
 
-    for (const song of songsToProcess) {
+    for (const song of songs) {
       const existingAll = bySong.get(song.id) || [];
-      const existingNonRandom = existingAll.filter(
+      const existingAssigned = existingAll.filter(
         (s) => s.role !== "fake_random",
       );
-      const existingUserIds = new Set(existingNonRandom.map((s) => s.userId));
+      const existingUserIds = new Set(existingAssigned.map((s) => s.userId));
 
       const priorRandoms = existingAll.filter((s) => s.role === "fake_random");
       for (const r of priorRandoms) {
@@ -100,12 +79,17 @@ export async function randomAssignSongers() {
           );
       }
 
-      const existingCount = existingNonRandom.length;
+      const existingCount = existingAssigned.filter((u) => {
+        return !users.find((p) => p.id === u.userId)?.isJammer;
+      }).length;
+
       const needed = Math.max(0, minSongers - existingCount);
 
       let added = 0;
       if (needed > 0) {
-        const candidates = users.filter((u) => !existingUserIds.has(u.id));
+        const candidates = participants.filter(
+          (u) => !existingUserIds.has(u.id),
+        );
 
         if (candidates.length === 0) {
           continue;
@@ -130,6 +114,7 @@ export async function randomAssignSongers() {
           const pool = shuffle(
             remaining.filter((c) => getCount(c.id) === minCount),
           );
+
           const pick = pool[0];
           if (!pick) {
             break;

@@ -3,6 +3,7 @@
 import { Check, ChevronsUpDown } from "lucide-react";
 import { type Ref, useMemo, useState } from "react";
 import type { User } from "@/actions/user-action";
+import { Badge } from "@/components/ui/badge";
 import {
   Command,
   CommandEmpty,
@@ -46,11 +47,10 @@ export function UserSelector({
   const [search, setSearch] = useState("");
 
   const filteredUsers = useMemo(() => {
-    const filtered = users.filter((u) => !u.isJammer);
     if (!search.trim()) {
-      return filtered;
+      return users;
     }
-    return filtered.filter((u: User) =>
+    return users.filter((u: User) =>
       u.name.toLowerCase().includes(search.trim().toLowerCase()),
     );
   }, [search, users]);
@@ -76,7 +76,11 @@ export function UserSelector({
           )}
           disabled={disabled || isPending}
         >
-          {selectedUser ? selectedUser.name : placeholder}
+          <span className="flex gap-1">
+            {selectedUser ? selectedUser.name : placeholder}
+            {selectedUser?.isJammer && <Badge variant="outline">干扰</Badge>}
+          </span>
+
           <ChevronsUpDown className="ml-2 opacity-50 shrink-0" />
         </Button>
       </PopoverTrigger>
@@ -124,7 +128,10 @@ export function UserSelector({
                   key={user.id}
                   onSelect={() => handleSelect(user.id)}
                 >
-                  <span>{user.name}</span>
+                  <span className="flex gap-1">
+                    {user.name}
+                    {user.isJammer && <Badge variant="outline">干扰</Badge>}
+                  </span>
                   <Check
                     className={cn(
                       "ml-auto",

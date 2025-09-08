@@ -1,6 +1,4 @@
-﻿"use client";
-
-import { useMutation } from "@tanstack/react-query";
+﻿import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { deleteSong, type Song } from "@/actions/song-action";

@@ -1,14 +1,14 @@
 ﻿import { z } from "zod";
-import { LocalizedRecord } from "@/lib/arcaea/langs-schema";
+import { Langs } from "@/lib/arcaea/langs-schema";
 
 export const PackMetadataSchema = z.object({
   id: z.string(),
   section: z.enum(["archive", "free", "mainstory", "sidestory", "collab"]),
-  // cost: z.number().int().min(0).optional(), // deprecated
+  cost: z.number().int().min(0).optional(),
   custom_banner: z.boolean().optional(),
   plus_character: z.number().int().min(-1).optional(),
-  name_localized: LocalizedRecord(z.string()),
-  description_localized: LocalizedRecord(z.string()).optional(),
+  name_localized: z.partialRecord(Langs, z.string()),
+  description_localized: z.partialRecord(Langs, z.string()).optional(),
   img: z.string().optional(),
 });
 

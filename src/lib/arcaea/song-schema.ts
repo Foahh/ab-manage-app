@@ -1,5 +1,5 @@
 ﻿import { z } from "zod";
-import { LocalizedRecord } from "@/lib/arcaea/langs-schema";
+import { Langs } from "@/lib/arcaea/langs-schema";
 
 const BgDayNight = z.object({
   day: z.string(),
@@ -14,7 +14,7 @@ const AdditionalFile = z.union([
   }),
 ]);
 
-enum RatingClass {
+export enum RatingClass {
   Past = 0,
   Present = 1,
   Future = 2,
@@ -30,11 +30,11 @@ const Difficulty = z
     rating: z.number().int().default(-1),
     ratingPlus: z.boolean().optional(),
     legacy11: z.boolean().optional(),
-    // plusFingers: z.union([z.boolean(), z.literal(0), z.literal(1)]).optional(), // deprecated
+    plusFingers: z.union([z.boolean(), z.literal(0), z.literal(1)]).optional(),
     jacketOverride: z.boolean().optional(),
-    title_localized: LocalizedRecord(z.string()).optional(),
+    title_localized: z.partialRecord(Langs, z.string()).optional(),
     artist: z.string().optional(),
-    artist_localized: LocalizedRecord(z.string()).optional(),
+    artist_localized: z.partialRecord(Langs, z.string()).optional(),
     audioOverride: z.boolean().optional(),
     jacket_night: z.string().optional(),
     hidden_until_unlocked: z.boolean().optional(),
@@ -65,12 +65,12 @@ export const SongMetadataSchema = z.object({
   id: z.string(),
   idx: z.number().optional(),
   deleted: z.boolean().optional(),
-  title_localized: LocalizedRecord(z.string()),
-  jacket_localized: LocalizedRecord(z.boolean()).optional(),
+  title_localized: z.partialRecord(Langs, z.string()),
+  jacket_localized: z.partialRecord(Langs, z.boolean()).optional(),
   artist: z.string(),
-  artist_localized: LocalizedRecord(z.string()).optional(),
-  search_title: LocalizedRecord(z.string(), true).optional(),
-  search_artist: LocalizedRecord(z.string(), true).optional(),
+  artist_localized: z.partialRecord(Langs, z.string()).optional(),
+  search_title: z.partialRecord(Langs, z.string()).optional(),
+  search_artist: z.partialRecord(Langs, z.string()).optional(),
   bpm: z.string(),
   bpm_base: z.number().gt(0),
   set: z.string(),
@@ -87,7 +87,7 @@ export const SongMetadataSchema = z.object({
   date: z.number().int().min(0),
   version: z.string(),
   remote_dl: z.boolean().optional(),
-  source_localized: LocalizedRecord(z.string()).optional(),
+  source_localized: z.partialRecord(Langs, z.string()).optional(),
   source_copyright: z.string().optional(),
   no_stream: z.boolean().optional(),
   additional_files: z.array(AdditionalFile).optional(),
@@ -121,7 +121,7 @@ export const SongMetadataSchema = z.object({
         }
         return true;
       },
-      { error: "存在多个相同的难度" }
+      { error: "存在多个相同的难度" },
     ),
 });
 
