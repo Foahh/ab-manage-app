@@ -1,1 +1,0 @@
-ALTER TABLE "songs" ADD COLUMN "bonus" boolean DEFAULT false NOT NULL;

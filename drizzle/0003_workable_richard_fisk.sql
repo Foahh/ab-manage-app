@@ -1,1 +1,0 @@
-ALTER TABLE "songer" ADD COLUMN "isRandomAssigned" boolean DEFAULT false NOT NULL;

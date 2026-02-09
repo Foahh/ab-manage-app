@@ -1,11 +1,11 @@
-﻿import { defineConfig } from "drizzle-kit";
-import { env } from "@/config";
+﻿import { dbFile } from "@/lib/data";
+import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
   out: "./drizzle",
   schema: "./src/db/schemas",
-  dialect: "postgresql",
+  dialect: "sqlite",
   dbCredentials: {
-    url: env.DATABASE_URL,
-  },
+    url: `file:${dbFile}`,
+  },  
 });

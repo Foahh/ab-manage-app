@@ -1,9 +1,8 @@
-﻿import { drizzle } from "drizzle-orm/node-postgres";
-import { env } from "@/config";
+import { drizzle } from "drizzle-orm/bun-sqlite";
+import { Database } from "bun:sqlite";
+import { dbFile } from "@/lib/data";
+import fs from "node:fs/promises";
 
-export const db = drizzle({
-  connection: {
-    connectionString: env.DATABASE_URL,
-    ssl: true,
-  },
-});
+
+const client = new Database(dbFile, { create: true });
+export const db = drizzle({ client });

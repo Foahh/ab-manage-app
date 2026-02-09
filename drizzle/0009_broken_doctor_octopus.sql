@@ -1,1 +1,0 @@
-ALTER TABLE "songs" ADD COLUMN "mysteryIndex" integer DEFAULT 0 NOT NULL;

@@ -1,13 +1,13 @@
-﻿import { boolean, integer, pgTable, varchar } from "drizzle-orm/pg-core";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import timestampTableColumns from "@/db/schemas/columns/timestamp-column";
 
-export const usersTable = pgTable("users", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity().notNull(),
-  name: varchar().notNull(),
-  isJammer: boolean().notNull().default(false),
+export const usersTable = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
+  name: text("name").notNull(),
+  isJammer: integer("isJammer", { mode: "boolean" }).notNull().default(false),
 
-  contact: varchar(),
-  bilibili: varchar(),
+  contact: text("contact"),
+  bilibili: text("bilibili"),
 
   ...timestampTableColumns,
 });

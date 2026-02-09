@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
@@ -6,11 +6,7 @@ import { db } from "@/db";
 import { songsTable } from "@/db/schemas/songs-table";
 import type { PackMetadata } from "@/lib/arcaea/pack-schema";
 import type { SongMetadata } from "@/lib/arcaea/song-schema";
-
-const dataDir = `${process.cwd()}/data`;
-const bgDir = `${dataDir}/bg`;
-const songsDir = `${dataDir}/songs`;
-const assetsDir = `${dataDir}/assets`;
+import { assetsDir, bgDir, songsDir } from "@/lib/data";
 
 export type ExportPackOptions = {
   packMeta: PackMetadata;
