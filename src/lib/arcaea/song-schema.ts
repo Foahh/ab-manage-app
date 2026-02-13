@@ -125,8 +125,4 @@ export const SongMetadataSchema = z.object({
     ),
 });
 
-export const SongListSchema = z.object({
-  songs: z.array(SongMetadataSchema),
-});
-
 export type SongMetadata = z.infer<typeof SongMetadataSchema>;

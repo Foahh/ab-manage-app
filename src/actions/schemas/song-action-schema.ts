@@ -8,3 +8,7 @@ export const SongCreateSchema = z.object({
 });
 
 export const SongUpdateSchema = SongCreateSchema.partial();
+
+export const SongBulkImportSchema = z.object({
+  songs: z.array(SongMetadataSchema),
+});

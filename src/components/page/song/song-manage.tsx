@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMutation } from "@tanstack/react-query";
 import type { ColDef } from "ag-grid-community";
@@ -8,12 +8,12 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { randomMysteryOrder } from "@/actions/random-order-action";
 import { getNextMysteryOrder, type Song } from "@/actions/song-action";
-import { deleteSonger } from "@/actions/songer-action";
 import Grid from "@/components/grid/ag-grid";
 import {
   ChartDesignerCellRenderer,
   ChartDifficultyCellRenderer,
 } from "@/components/grid/chart-cell-renderer";
+import { BulkImportSongsDialog } from "@/components/page/song/bulk-import-songs-dialog";
 import { DeleteSongDialog } from "@/components/page/song/delete-song-dialog";
 import { UpsertSongDialog } from "@/components/page/song/upsert-song-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -24,6 +24,7 @@ import type { SongMetadata } from "@/lib/arcaea/song-schema";
 export function SongManage() {
   const [upsertDialogOpen, setUpsertDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [bulkImportDialogOpen, setBulkImportDialogOpen] = useState(false);
   const [selectedSong, setSelectedSong] = useState<Partial<Song> | null>(null);
 
   const openUpsertDialog = useCallback(async (song?: Song) => {
@@ -143,6 +144,9 @@ export function SongManage() {
         <Button onClick={() => openUpsertDialog()} variant="default">
           新增歌曲
         </Button>
+        <Button onClick={() => setBulkImportDialogOpen(true)} variant="default">
+          批量导入
+        </Button>
         <Button
           onClick={() => randomMutate()}
           disabled={isRandomPending}
@@ -176,14 +180,20 @@ export function SongManage() {
         onSuccess={refetchSong}
       />
 
-      {selectedSong && selectedSong.id && selectedSong.metadata && (
+      {selectedSong?.id && selectedSong.metadata && (
         <DeleteSongDialog
           open={deleteDialogOpen}
           setOpen={setDeleteDialogOpen}
-          song={selectedSong as any}
+          song={selectedSong as Partial<Song> & Pick<Song, "id" | "metadata">}
           onSuccess={refetchSong}
         />
       )}
+
+      <BulkImportSongsDialog
+        open={bulkImportDialogOpen}
+        setOpen={setBulkImportDialogOpen}
+        onSuccess={refetchSong}
+      />
     </section>
   );
 }
