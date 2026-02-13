@@ -1,4 +1,4 @@
-﻿import dynamic from "next/dynamic";
+import dynamic from "next/dynamic";
 import type { IMarker } from "react-ace";
 
 const AceEditor = dynamic(
@@ -56,8 +56,12 @@ export function JsonAceEditor({
       <style>
         {`
         .error-highlight {
-          background: #ffeeee !important;
+          background: rgba(239, 68, 68, 0.2) !important;
+          border-left: 3px solid #ef4444 !important;
           position: absolute;
+        }
+        .ace_editor .ace_gutter-cell.ace_error {
+          background-color: rgba(239, 68, 68, 0.2);
         }
       `}
       </style>
