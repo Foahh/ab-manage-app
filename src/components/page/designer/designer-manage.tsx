@@ -6,50 +6,52 @@ import type { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
 import { Pen, Trash } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { randomAssignSongers } from "@/actions/random-songer-action";
-import type { Songer } from "@/actions/songer-action";
+import { randomAssignDesigners } from "@/actions/random-designer-action";
+import type { Designer } from "@/actions/designer-action";
 import Grid from "@/components/grid/ag-grid";
-import { DeleteSongerDialog } from "@/components/page/songer/delete-songer-dialog";
-import { UpsertSongerDialog } from "@/components/page/songer/upsert-songer-dialog";
+import { DeleteDesignerDialog } from "@/components/page/designer/delete-designer-dialog";
+import { UpsertDesignerDialog } from "@/components/page/designer/upsert-designer-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
-  useAllSongersQuery,
+  useAllDesignersQuery,
   useAllSongsQuery,
   useAllUsersQuery,
 } from "@/hooks/query";
 
-export function SongerManage() {
+export function DesignerManage() {
   const { data: users } = useAllUsersQuery();
   const { data: songs } = useAllSongsQuery();
   const {
-    isPending: isSongerPending,
-    error: songerError,
-    data: songers,
+    isPending: isDesignerPending,
+    error: designerError,
+    data: designers,
     refetch: refetchSong,
-  } = useAllSongersQuery();
+  } = useAllDesignersQuery();
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedSonger, setSelectedSonger] = useState<Songer | null>(null);
+  const [selectedDesigner, setSelectedDesigner] = useState<Designer | null>(
+    null,
+  );
 
   const openAddDialog = useCallback(() => {
-    setSelectedSonger(null);
+    setSelectedDesigner(null);
     setEditDialogOpen(true);
   }, []);
 
-  const openEditDialog = useCallback((songer?: Songer) => {
-    setSelectedSonger(songer ?? null);
+  const openEditDialog = useCallback((designer?: Designer) => {
+    setSelectedDesigner(designer ?? null);
     setEditDialogOpen(true);
   }, []);
 
-  const openDeleteDialog = useCallback((songer?: Songer) => {
-    setSelectedSonger(songer ?? null);
+  const openDeleteDialog = useCallback((designer?: Designer) => {
+    setSelectedDesigner(designer ?? null);
     setDeleteDialogOpen(true);
   }, []);
 
   const actionCellRenderer = useCallback(
-    (params: CustomCellRendererProps<Songer>) => (
+    (params: CustomCellRendererProps<Designer>) => (
       <div className="flex gap-1.5 w-full h-full justify-center items-center">
         <Button
           className="size-8"
@@ -71,7 +73,7 @@ export function SongerManage() {
     [openEditDialog, openDeleteDialog],
   );
 
-  const columnDefs: ColDef<Songer>[] = useMemo(
+  const columnDefs: ColDef<Designer>[] = useMemo(
     () => [
       {
         headerName: "歌曲",
@@ -115,14 +117,16 @@ export function SongerManage() {
     [actionCellRenderer, songs, users],
   );
 
-  const gridRef = useRef<AgGridReact<Songer>>(null);
+  const gridRef = useRef<AgGridReact<Designer>>(null);
 
-  const relatedSongers = useMemo(() => {
-    return songers?.filter((s) => s.songId === selectedSonger?.songId) || [];
-  }, [selectedSonger?.songId, songers]);
+  const relatedDesigners = useMemo(() => {
+    return (
+      designers?.filter((s) => s.songId === selectedDesigner?.songId) || []
+    );
+  }, [selectedDesigner?.songId, designers]);
 
   const randomMutate = useMutation({
-    mutationFn: randomAssignSongers,
+    mutationFn: randomAssignDesigners,
     onSuccess: async () => {
       toast.success("随机分配成功");
       await refetchSong();
@@ -148,37 +152,39 @@ export function SongerManage() {
         </Button>
       </header>
 
-      {songerError && (
+      {designerError && (
         <Alert variant="destructive">
-          <AlertDescription>加载失败：{songerError?.message}</AlertDescription>
+          <AlertDescription>
+            加载失败：{designerError?.message}
+          </AlertDescription>
         </Alert>
       )}
 
-      {!songerError && (
-        <Grid<Songer>
+      {!designerError && (
+        <Grid<Designer>
           ref={gridRef}
-          rowData={songers}
+          rowData={designers}
           columnDefs={columnDefs}
           domLayout="autoHeight"
           suppressClickEdit={true}
-          loading={isSongerPending}
+          loading={isDesignerPending}
           enableCellSpan
         />
       )}
 
-      <UpsertSongerDialog
+      <UpsertDesignerDialog
         open={editDialogOpen}
         setOpen={setEditDialogOpen}
-        initialSongId={selectedSonger?.songId}
-        initialSongers={relatedSongers}
+        initialSongId={selectedDesigner?.songId}
+        initialDesigners={relatedDesigners}
         onSuccess={refetchSong}
       />
 
-      {selectedSonger && (
-        <DeleteSongerDialog
+      {selectedDesigner && (
+        <DeleteDesignerDialog
           open={deleteDialogOpen}
           setOpen={setDeleteDialogOpen}
-          songer={selectedSonger}
+          designer={selectedDesigner}
           onSuccess={refetchSong}
         />
       )}

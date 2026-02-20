@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { PackManage } from "@/components/page/pack/pack-manage";
 import { SongManage } from "@/components/page/song/song-manage";
-import { SongerManage } from "@/components/page/songer/songer-manage";
+import { DesignerManage } from "@/components/page/designer/designer-manage";
 import { UserManage } from "@/components/page/user/user-manage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -32,7 +32,7 @@ export default function Home() {
         <TabsList className="mx-2 mt-2">
           <TabsTrigger value="users">谱师管理</TabsTrigger>
           <TabsTrigger value="songs">歌曲管理</TabsTrigger>
-          <TabsTrigger value="songers">选项管理</TabsTrigger>
+          <TabsTrigger value="designers">选项管理</TabsTrigger>
           <TabsTrigger value="pack">打包</TabsTrigger>
         </TabsList>
         <TabsContent value="users">
@@ -41,8 +41,8 @@ export default function Home() {
         <TabsContent value="songs">
           <SongManage />
         </TabsContent>
-        <TabsContent value="songers">
-          <SongerManage />
+        <TabsContent value="designers">
+          <DesignerManage />
         </TabsContent>
         <TabsContent value="pack">
           <PackManage />

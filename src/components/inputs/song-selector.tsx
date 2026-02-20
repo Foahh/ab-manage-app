@@ -16,7 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useAllSongersQuery, useAllSongsQuery } from "@/hooks/query";
+import { useAllDesignersQuery, useAllSongsQuery } from "@/hooks/query";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
@@ -44,7 +44,7 @@ export function SongSelector({
   hideSelected,
 }: SongSelectorProps) {
   const { data: songs = [], isPending, isError } = useAllSongsQuery();
-  const { data: songers } = useAllSongersQuery({
+  const { data: designers } = useAllDesignersQuery({
     enabled: hideSelected,
   });
 
@@ -55,10 +55,10 @@ export function SongSelector({
     const notSelected = songs
       .filter((s) => !s.isBonus)
       .filter((s) => {
-        if (!songers || !hideSelected) {
+        if (!designers || !hideSelected) {
           return true;
         }
-        return !songers.some((songer) => songer.songId === s.id);
+        return !designers.some((designer) => designer.songId === s.id);
       });
 
     if (!search.trim()) {
@@ -67,7 +67,7 @@ export function SongSelector({
     return notSelected.filter((s: Song) =>
       s.metadata.id.toLowerCase().includes(search.trim().toLowerCase()),
     );
-  }, [search, songs, songers, hideSelected]);
+  }, [search, songs, designers, hideSelected]);
 
   const selectedSong = songs.find((s: Song) => s.id === value);
 

@@ -2,7 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
-import { songerTable } from "@/db/schemas/songer-table";
+import { designerTable } from "@/db/schemas/designer-table";
 import { songsTable } from "@/db/schemas/songs-table";
 import { usersTable } from "@/db/schemas/users-table";
 import { getLocale } from "@/lib/arcaea/langs-schema";
@@ -47,10 +47,10 @@ function printQuestions(questions: Question[]): string {
 }
 
 export async function txQuestionnaire() {
-  const [songs, users, songers] = await Promise.all([
+  const [songs, users, designers] = await Promise.all([
     db.select().from(songsTable).where(eq(songsTable.isBonus, false)),
     db.select().from(usersTable),
-    db.select().from(songerTable),
+    db.select().from(designerTable),
   ]);
 
   const questions: Question[] = [];
@@ -68,7 +68,7 @@ export async function txQuestionnaire() {
   });
 
   for (const song of songs) {
-    const assignedUser = songers
+    const assignedUser = designers
       .filter((s) => s.songId === song.id)
       .map((s) => {
         const user = users.find((u) => u.id === s.userId);

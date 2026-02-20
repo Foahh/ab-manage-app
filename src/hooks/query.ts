@@ -1,12 +1,12 @@
-﻿import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getAllSongs } from "@/actions/song-action";
-import { getAllSongers, getSomeSongers } from "@/actions/songer-action";
+import { getAllDesigners, getSomeDesigners } from "@/actions/designer-action";
 import { getAllUsers } from "@/actions/user-action";
 
 export const QUERY_KEYS = {
   USERS: "USERS",
   SONGS: "SONGS",
-  SONGERS: "SONGERS",
+  DESIGNERS: "DESIGNERS",
 };
 
 export function useAllUsersQuery() {
@@ -25,21 +25,21 @@ export function useAllSongsQuery() {
   });
 }
 
-export function useAllSongersQuery({
+export function useAllDesignersQuery({
   enabled = true,
 }: { enabled?: boolean } | undefined = {}) {
   return useQuery({
     enabled,
-    queryKey: [QUERY_KEYS.SONGERS],
-    queryFn: getAllSongers,
+    queryKey: [QUERY_KEYS.DESIGNERS],
+    queryFn: getAllDesigners,
     staleTime: 10 * 60 * 1000,
   });
 }
 
-export function useSomeSongersQuery(songId: number) {
+export function useSomeDesignersQuery(songId: number) {
   return useQuery({
-    queryKey: [QUERY_KEYS.SONGERS, songId],
-    queryFn: () => getSomeSongers(songId),
+    queryKey: [QUERY_KEYS.DESIGNERS, songId],
+    queryFn: () => getSomeDesigners(songId),
     staleTime: 10 * 60 * 1000,
   });
 }

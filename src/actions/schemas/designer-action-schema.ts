@@ -1,25 +1,25 @@
 ﻿import { z } from "zod";
 import { IdSchema } from "@/actions/schemas/common-action-schema";
 
-export const SongerRoles = ["real", "fake_assigned", "fake_random"] as const;
+export const DesignerRoles = ["real", "fake_assigned", "fake_random"] as const;
 
-export const SongerRoleEnum = z.enum(SongerRoles);
+export const DesignerRoleEnum = z.enum(DesignerRoles);
 
-export const SongerCreateSchema = z.object({
+export const DesignerCreateSchema = z.object({
   songId: IdSchema,
   userId: IdSchema,
-  role: SongerRoleEnum,
+  role: DesignerRoleEnum,
 });
 
-export const SongerUpdateSchema = SongerCreateSchema.partial();
+export const DesignerUpdateSchema = DesignerCreateSchema.partial();
 
-export const MultipleSongersSchema = z
+export const MultipleDesignersSchema = z
   .object({
     songId: IdSchema.optional(),
-    songers: z.array(
+    designers: z.array(
       z.object({
         userId: IdSchema.optional(),
-        role: SongerRoleEnum,
+        role: DesignerRoleEnum,
         isNew: z.boolean().optional(),
       }),
     ),

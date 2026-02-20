@@ -5,8 +5,11 @@ import { useEffect, useMemo } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
-import { MultipleSongersSchema } from "@/actions/schemas/songer-action-schema";
-import { type Songer, updateMultipleSongers } from "@/actions/songer-action";
+import { MultipleDesignersSchema } from "@/actions/schemas/designer-action-schema";
+import {
+  type Designer,
+  updateMultipleDesigners,
+} from "@/actions/designer-action";
 import { RoleSelectField } from "@/components/form/role-select-field";
 import { SongSelectField } from "@/components/form/song-select-field";
 import { UserSelectField } from "@/components/form/user-select-field";
@@ -21,29 +24,29 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 
-type FormData = z.infer<typeof MultipleSongersSchema>;
+type FormData = z.infer<typeof MultipleDesignersSchema>;
 
 type UpsertSongDialogProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   initialSongId?: number;
-  initialSongers: Songer[];
+  initialDesigners: Designer[];
   onSuccess?: () => void;
 };
 
-export function UpsertSongerDialog({
+export function UpsertDesignerDialog({
   open,
   setOpen,
   initialSongId,
-  initialSongers,
+  initialDesigners,
   onSuccess,
 }: UpsertSongDialogProps) {
   const defaultValues = useMemo((): FormData => {
-    const songers =
-      initialSongers.length > 0
-        ? initialSongers.map((songer) => ({
-            userId: songer.userId,
-            role: songer.role,
+    const designers =
+      initialDesigners.length > 0
+        ? initialDesigners.map((designer) => ({
+            userId: designer.userId,
+            role: designer.role,
           }))
         : [
             {
@@ -54,19 +57,19 @@ export function UpsertSongerDialog({
 
     return {
       songId: initialSongId,
-      songers,
+      designers,
     };
-  }, [initialSongId, initialSongers]);
+  }, [initialSongId, initialDesigners]);
 
   const form = useForm<FormData>({
-    resolver: zodResolver(MultipleSongersSchema),
+    resolver: zodResolver(MultipleDesignersSchema),
     defaultValues,
     mode: "onTouched",
   });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "songers",
+    name: "designers",
   });
 
   useEffect(() => {
@@ -81,22 +84,22 @@ export function UpsertSongerDialog({
         throw new Error("Song ID is required");
       }
 
-      const validSongers = data.songers.filter(
+      const validDesigners = data.designers.filter(
         (
-          songer,
-        ): songer is {
+          designer,
+        ): designer is {
           userId: number;
-          role: typeof songer.role;
+          role: typeof designer.role;
           isNew?: boolean;
-        } => songer.userId !== undefined,
+        } => designer.userId !== undefined,
       );
 
       const submitData = {
         songId: data.songId,
-        songers: validSongers,
+        designers: validDesigners,
       };
 
-      return updateMultipleSongers(submitData);
+      return updateMultipleDesigners(submitData);
     },
     onSuccess: () => {
       toast.success("选项信息已更新。");
@@ -113,11 +116,11 @@ export function UpsertSongerDialog({
     mutation.mutate(data);
   });
 
-  const addSonger = () => {
+  const addDesigner = () => {
     append({ userId: undefined, role: "fake_assigned" });
   };
 
-  const removeSonger = (index: number) => {
+  const removeDesigner = (index: number) => {
     if (fields.length > 1) {
       remove(index);
     }
@@ -154,14 +157,14 @@ export function UpsertSongerDialog({
                       <UserSelectField
                         modalPopover={true}
                         control={form.control}
-                        name={`songers.${index}.userId`}
+                        name={`designers.${index}.userId`}
                         label="谱师"
                       />
                     </div>
                     <div className="flex-1">
                       <RoleSelectField
                         control={form.control}
-                        name={`songers.${index}.role`}
+                        name={`designers.${index}.role`}
                         label="角色"
                       />
                     </div>
@@ -169,7 +172,7 @@ export function UpsertSongerDialog({
                       type="button"
                       variant="destructive"
                       size="icon"
-                      onClick={() => removeSonger(index)}
+                      onClick={() => removeDesigner(index)}
                       disabled={fields.length === 1}
                       className="shrink-0"
                     >
@@ -182,7 +185,7 @@ export function UpsertSongerDialog({
               <Button
                 type="button"
                 variant="outline"
-                onClick={addSonger}
+                onClick={addDesigner}
                 className="w-full"
               >
                 <Plus className="h-4 w-4 mr-2" />

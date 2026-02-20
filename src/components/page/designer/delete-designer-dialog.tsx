@@ -1,7 +1,7 @@
 ﻿import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
-import { deleteSonger, type Songer } from "@/actions/songer-action";
+import { deleteDesigner, type Designer } from "@/actions/designer-action";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,33 +13,33 @@ import {
 } from "@/components/ui/dialog";
 import { useAllSongsQuery, useAllUsersQuery } from "@/hooks/query";
 
-type DeleteSongerDialogProps = {
+type DeleteDesignerDialogProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  songer: Songer;
+  designer: Designer;
   onSuccess?: () => void;
 };
 
-export function DeleteSongerDialog({
+export function DeleteDesignerDialog({
   open,
   setOpen,
-  songer,
+  designer,
   onSuccess,
-}: DeleteSongerDialogProps) {
+}: DeleteDesignerDialogProps) {
   const { data: users } = useAllUsersQuery();
   const { data: songs } = useAllSongsQuery();
 
   const { songName, userName } = useMemo(() => {
-    const song = songs?.find((s) => s.id === songer.songId);
-    const user = users?.find((u) => u.id === songer.userId);
+    const song = songs?.find((s) => s.id === designer.songId);
+    const user = users?.find((u) => u.id === designer.userId);
     return {
       songName: song ? song.metadata.id : "未知歌曲",
       userName: user ? user.name : "未知谱师",
     };
-  }, [songer.songId, songer.userId, songs, users]);
+  }, [designer.songId, designer.userId, songs, users]);
 
   const mutation = useMutation({
-    mutationFn: () => deleteSonger(songer.songId, songer.userId),
+    mutationFn: () => deleteDesigner(designer.songId, designer.userId),
     onSuccess: () => {
       toast.success("选项已删除。");
       setOpen(false);

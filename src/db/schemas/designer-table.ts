@@ -4,14 +4,16 @@ import {
   sqliteTable,
   text,
 } from "drizzle-orm/sqlite-core";
-import { SongerRoles } from "@/actions/schemas/songer-action-schema";
+import { DesignerRoles } from "@/actions/schemas/designer-action-schema";
 import timestampTableColumns from "@/db/schemas/columns/timestamp-column";
 import { songsTable } from "@/db/schemas/songs-table";
 import { usersTable } from "@/db/schemas/users-table";
 
-export const SongerRoleEnum = () => text("songer_role", { enum: SongerRoles });
+// backward compability
+export const DesignerRoleEnum = () =>
+  text("songer_role", { enum: DesignerRoles });
 
-export const songerTable = sqliteTable(
+export const designerTable = sqliteTable(
   "songer",
   {
     songId: integer("song_id")
@@ -21,7 +23,7 @@ export const songerTable = sqliteTable(
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
 
-    role: SongerRoleEnum().notNull(),
+    role: DesignerRoleEnum().notNull(),
 
     ...timestampTableColumns,
   },

@@ -2,32 +2,32 @@
 
 import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { songerTable } from "@/db/schemas/songer-table";
+import { designerTable } from "@/db/schemas/designer-table";
 import { songsTable } from "@/db/schemas/songs-table";
 import { usersTable } from "@/db/schemas/users-table";
 import { shuffle } from "@/lib/shuffle";
 
-const minSongers = 4;
+const minDesigners = 4;
 
-export async function randomAssignSongers() {
-  if (minSongers <= 0) {
-    throw new Error("minSongers must be > 0");
+export async function randomAssignDesigners() {
+  if (minDesigners <= 0) {
+    throw new Error("minDesigners must be > 0");
   }
 
-  const [songs, users, songers] = await Promise.all([
+  const [songs, users, designers] = await Promise.all([
     db.select().from(songsTable).where(eq(songsTable.isBonus, false)),
     db.select().from(usersTable),
-    db.select().from(songerTable),
+    db.select().from(designerTable),
   ]);
 
   const participants = users
     .filter((u) => !u.isJammer)
     .filter((u) => {
-      return songers.some((s) => s.userId === u.id && s.role === "real");
+      return designers.some((s) => s.userId === u.id && s.role === "real");
     });
 
   if (participants.length === 0) {
-    throw new Error("No users available to assign as songers");
+    throw new Error("No users available to assign as designers");
   }
 
   const resultPerSong: Array<{
@@ -38,11 +38,11 @@ export async function randomAssignSongers() {
   }> = [];
 
   await db.transaction(async (trx) => {
-    const bySong = new Map<number, typeof songers>();
-    for (const s of songers) {
+    const bySong = new Map<number, typeof designers>();
+    for (const s of designers) {
       let arr = bySong.get(s.songId);
       if (!arr) {
-        const newArr: typeof songers = [];
+        const newArr: typeof designers = [];
         bySong.set(s.songId, newArr);
         arr = newArr;
       }
@@ -50,7 +50,7 @@ export async function randomAssignSongers() {
     }
 
     const userCounts = new Map<number, number>();
-    for (const s of songers) {
+    for (const s of designers) {
       if (s.role === "fake_random") {
         continue;
       }
@@ -70,11 +70,11 @@ export async function randomAssignSongers() {
       const priorRandoms = existingAll.filter((s) => s.role === "fake_random");
       for (const r of priorRandoms) {
         await trx
-          .delete(songerTable)
+          .delete(designerTable)
           .where(
             and(
-              eq(songerTable.songId, r.songId),
-              eq(songerTable.userId, r.userId),
+              eq(designerTable.songId, r.songId),
+              eq(designerTable.userId, r.userId),
             ),
           );
       }
@@ -83,7 +83,7 @@ export async function randomAssignSongers() {
         return !users.find((p) => p.id === u.userId)?.isJammer;
       }).length;
 
-      const needed = Math.max(0, minSongers - existingCount);
+      const needed = Math.max(0, minDesigners - existingCount);
 
       let added = 0;
       if (needed > 0) {
@@ -120,7 +120,7 @@ export async function randomAssignSongers() {
             break;
           }
 
-          await trx.insert(songerTable).values({
+          await trx.insert(designerTable).values({
             songId: song.id,
             userId: pick.id,
             role: "fake_random",

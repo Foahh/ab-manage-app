@@ -42,7 +42,7 @@ export function SongManage() {
 
   const {
     isPending: isSongPending,
-    error: songError,
+    error: songFetchError,
     data: songs,
     refetch: refetchSong,
   } = useAllSongsQuery();
@@ -156,13 +156,15 @@ export function SongManage() {
         </Button>
       </header>
 
-      {songError && (
+      {songFetchError && (
         <Alert variant="destructive">
-          <AlertDescription>加载失败：{songError?.message}</AlertDescription>
+          <AlertDescription>
+            加载失败：{songFetchError?.message}
+          </AlertDescription>
         </Alert>
       )}
 
-      {!songError && (
+      {!songFetchError && (
         <Grid<Song>
           ref={gridRef}
           rowData={songs}
