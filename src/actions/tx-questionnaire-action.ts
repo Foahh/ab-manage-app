@@ -89,7 +89,7 @@ export async function txQuestionnaire() {
       .filter((user) => !user.isJammer)
       .map((user) => ({
         id: user.id,
-        label: `[${user.name}](https://space.bilibili.com/${user.bilibili})`,
+        label: `[${user.name}](${user.bilibili})`,
       }));
 
     shuffle(options);
@@ -97,7 +97,7 @@ export async function txQuestionnaire() {
     for (const jammer of jammers) {
       options.push({
         id: jammer.id,
-        label: `干扰 ~ [${jammer.name}](https://space.bilibili.com/${jammer.bilibili})`,
+        label: `干扰 ~ [${jammer.name}](${jammer.bilibili})`,
       });
     }
 
@@ -110,7 +110,7 @@ export async function txQuestionnaire() {
 
     const { metadata } = song;
 
-    const designers = metadata.difficulties
+    const chartDesigners = metadata.difficulties
       .filter((d) => d.rating > 0)
       .map((d) => {
         return `${classMap[d.ratingClass]}${d.rating}${d.ratingPlus ? "+" : ""}: ${d.chartDesigner}`;
@@ -119,7 +119,7 @@ export async function txQuestionnaire() {
 
     const question: Question = {
       title: `${getLocale(metadata.title_localized)} - ${getLocale(metadata.artist_localized) ?? metadata.artist}`,
-      description: `**ID: ${metadata.id}**\n${designers}`,
+      description: `**ID: ${metadata.id}**\n${chartDesigners}`,
       type: answers.length > 1 ? "多选题" : "单选题",
       scoring: answers.length > 1 ? "部分" : "全部",
       options: options,

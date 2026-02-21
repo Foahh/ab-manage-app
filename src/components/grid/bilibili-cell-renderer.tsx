@@ -8,7 +8,7 @@ export function BilibiliCellRenderer(params: CustomCellRendererProps) {
   }
   return (
     <a
-      href={`https://space.bilibili.com/${value}`}
+      href={value}
       target="_blank"
       rel="noreferrer"
       className="text-blue-600 hover:underline"
