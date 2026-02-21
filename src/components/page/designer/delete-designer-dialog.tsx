@@ -1,7 +1,7 @@
 ﻿import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
-import { deleteDesigner, type Designer } from "@/actions/designer-action";
+import { type Designer, deleteDesigner } from "@/actions/designer-action";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

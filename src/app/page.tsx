@@ -2,9 +2,9 @@
 
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { DesignerManage } from "@/components/page/designer/designer-manage";
 import { PackManage } from "@/components/page/pack/pack-manage";
 import { SongManage } from "@/components/page/song/song-manage";
-import { DesignerManage } from "@/components/page/designer/designer-manage";
 import { UserManage } from "@/components/page/user/user-manage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 

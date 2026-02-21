@@ -7,8 +7,9 @@
     "build": "bun run --bun next build --turbopack",
     "start": "bun run --bun next start",
     "lint": "biome check",
-    "format": "biome format --write",
-    "db:push": "bun run --bun drizzle-kit push"
+    "check:w": "biome check --write",
+    "db:push": "bun run --bun drizzle-kit push",
+    "check:ts": "tsc --noEmit"
   },
   "dependencies": {
     "@ag-grid-community/locale": "^35.1.0",

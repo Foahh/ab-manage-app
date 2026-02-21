@@ -3,19 +3,20 @@ import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { MultipleCustomDesignersSchema } from "@/actions/schemas/custom-designer-action-schema";
+import {
+  type CustomDesigner,
+  updateMultipleCustomDesigners,
+} from "@/actions/custom-designer-action";
 import {
   type Designer,
   updateMultipleDesigners,
 } from "@/actions/designer-action";
-import {
-  updateMultipleCustomDesigners,
-  type CustomDesigner,
-} from "@/actions/custom-designer-action";
+import { MultipleCustomDesignersSchema } from "@/actions/schemas/custom-designer-action-schema";
 import { editSong } from "@/actions/song-action";
 import { RoleSelectField } from "@/components/form/role-select-field";
 import { SongSelectField } from "@/components/form/song-select-field";
 import { UserSelectField } from "@/components/form/user-select-field";
+import { CustomRoleSelect } from "@/components/inputs/custom-role-select";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -41,12 +42,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CustomRoleSelect } from "@/components/inputs/custom-role-select";
 
 type FormData = {
   songId?: number;
   usingCustomDesigners: boolean;
-  designers: Array<{ userId?: number; role: "real" | "fake_assigned" | "fake_random" }>;
+  designers: Array<{
+    userId?: number;
+    role: "real" | "fake_assigned" | "fake_random";
+  }>;
   customDesigners: Array<{ label: string; role: "real" | "fake" }>;
 };
 
@@ -133,7 +136,9 @@ export function UpsertDesignerDialog({
       if (data.usingCustomDesigners) {
         const parsed = MultipleCustomDesignersSchema.parse({
           songId,
-          designers: data.customDesigners.filter((d) => d.label.trim().length > 0),
+          designers: data.customDesigners.filter(
+            (d) => d.label.trim().length > 0,
+          ),
         });
         if (parsed.designers.length === 0) {
           throw new Error("请至少添加一个自定义谱师并填写名称");
@@ -141,7 +146,9 @@ export function UpsertDesignerDialog({
         await updateMultipleCustomDesigners(parsed);
       } else {
         const validDesigners = data.designers.filter(
-          (d): d is { userId: number; role: FormData["designers"][0]["role"] } =>
+          (
+            d,
+          ): d is { userId: number; role: FormData["designers"][0]["role"] } =>
             d.userId != null,
         );
         if (validDesigners.length === 0) {
@@ -149,7 +156,9 @@ export function UpsertDesignerDialog({
         }
         await updateMultipleDesigners({ songId, designers: validDesigners });
       }
-      await editSong(songId, { usingCustomDesigners: data.usingCustomDesigners });
+      await editSong(songId, {
+        usingCustomDesigners: data.usingCustomDesigners,
+      });
     },
     onSuccess: () => {
       toast.success("选项信息已更新。");
@@ -178,7 +187,9 @@ export function UpsertDesignerDialog({
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>编辑选项</DialogTitle>
-          <DialogDescription>完成后点击保存。可切换「用户选择」与「自定义文本」，已填数据会保留。</DialogDescription>
+          <DialogDescription>
+            完成后点击保存。可切换「用户选择」与「自定义文本」，已填数据会保留。
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={onSubmit} className="space-y-4">

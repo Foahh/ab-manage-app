@@ -6,9 +6,9 @@ import type { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
 import { Pen, Trash } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { randomAssignDesigners } from "@/actions/random-designer-action";
-import type { Designer } from "@/actions/designer-action";
 import type { CustomDesigner } from "@/actions/custom-designer-action";
+import type { Designer } from "@/actions/designer-action";
+import { randomAssignDesigners } from "@/actions/random-designer-action";
 import type { Song } from "@/actions/song-action";
 import Grid from "@/components/grid/ag-grid";
 import { DeleteDesignerDialog } from "@/components/page/designer/delete-designer-dialog";
@@ -16,10 +16,10 @@ import { UpsertDesignerDialog } from "@/components/page/designer/upsert-designer
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
+  useAllCustomDesignersQuery,
   useAllDesignersQuery,
   useAllSongsQuery,
   useAllUsersQuery,
-  useAllCustomDesignersQuery,
 } from "@/hooks/query";
 
 export type DesignerGridRow =
@@ -39,16 +39,17 @@ export function DesignerManage() {
     data: designers,
     refetch: refetchDesigners,
   } = useAllDesignersQuery();
-  const {
-    data: customDesigners,
-    refetch: refetchCustomDesigners,
-  } = useAllCustomDesignersQuery();
+  const { data: customDesigners, refetch: refetchCustomDesigners } =
+    useAllCustomDesignersQuery();
   const { refetch: refetchSongs } = useAllSongsQuery();
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedSongIdForEdit, setSelectedSongIdForEdit] = useState<number | null>(null);
-  const [selectedDesignerForDelete, setSelectedDesignerForDelete] = useState<Designer | null>(null);
+  const [selectedSongIdForEdit, setSelectedSongIdForEdit] = useState<
+    number | null
+  >(null);
+  const [selectedDesignerForDelete, setSelectedDesignerForDelete] =
+    useState<Designer | null>(null);
 
   const openAddDialog = useCallback(() => {
     setSelectedSongIdForEdit(null);
@@ -74,10 +75,7 @@ export function DesignerManage() {
       const canDelete = isUserRow(row);
       return (
         <div className="flex gap-1.5 w-full h-full justify-center items-center">
-          <Button
-            className="size-8"
-            onClick={() => openEditDialog(row)}
-          >
+          <Button className="size-8" onClick={() => openEditDialog(row)}>
             <Pen />
           </Button>
           {canDelete && (
@@ -180,7 +178,9 @@ export function DesignerManage() {
   }, [songs, designers, customDesigners]);
 
   const selectedSong = useMemo(
-    () => (songs?.find((s) => s.id === selectedSongIdForEdit) ?? null) as Song | null,
+    () =>
+      (songs?.find((s) => s.id === selectedSongIdForEdit) ??
+        null) as Song | null,
     [songs, selectedSongIdForEdit],
   );
   const relatedDesigners = useMemo(
@@ -188,7 +188,8 @@ export function DesignerManage() {
     [selectedSongIdForEdit, designers],
   );
   const relatedCustomDesigners = useMemo(
-    () => customDesigners?.filter((c) => c.songId === selectedSongIdForEdit) ?? [],
+    () =>
+      customDesigners?.filter((c) => c.songId === selectedSongIdForEdit) ?? [],
     [selectedSongIdForEdit, customDesigners],
   );
 

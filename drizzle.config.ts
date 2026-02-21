@@ -1,5 +1,5 @@
-﻿import { dbFile } from "@/lib/data";
-import { defineConfig } from "drizzle-kit";
+﻿import { defineConfig } from "drizzle-kit";
+import { dbFile } from "@/lib/data";
 
 export default defineConfig({
   out: "./drizzle",

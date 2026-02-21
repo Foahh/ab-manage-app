@@ -7,6 +7,8 @@ export const songsTable = sqliteTable("songs", {
   metadata: text("metadata", { mode: "json" }).$type<SongMetadata>().notNull(),
   isBonus: integer("isBonus", { mode: "boolean" }).default(false),
   mysteryOrder: integer("mysteryOrder").notNull().default(0),
-  usingCustomDesigners: integer("usingCustomDesigners", { mode: "boolean" }).default(false),
+  usingCustomDesigners: integer("usingCustomDesigners", {
+    mode: "boolean",
+  }).default(false),
   ...timestampTableColumns,
 });

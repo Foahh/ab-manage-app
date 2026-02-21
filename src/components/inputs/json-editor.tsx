@@ -1,9 +1,9 @@
 "use client";
 
+import jsonMap from "json-source-map";
 import * as React from "react";
 import type { IMarker } from "react-ace";
 import type { ZodObject } from "zod";
-import jsonMap from "json-source-map";
 import { JsonAceEditor } from "@/components/inputs/json-ace-editor";
 
 export interface JsonEditorProps<T> {

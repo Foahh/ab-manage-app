@@ -1,7 +1,7 @@
-import { mkdirSync, existsSync } from "node:fs";
-import { drizzle } from "drizzle-orm/bun-sqlite";
 import { Database } from "bun:sqlite";
-import { dbFile, dataDir } from "@/lib/data";
+import { existsSync, mkdirSync } from "node:fs";
+import { drizzle } from "drizzle-orm/bun-sqlite";
+import { dataDir, dbFile } from "@/lib/data";
 
 if (!existsSync(dataDir)) {
   mkdirSync(dataDir, { recursive: true });
