@@ -5,8 +5,8 @@ import type { SongMetadata } from "@/lib/arcaea/song-schema";
 export const songsTable = sqliteTable("songs", {
   id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
   metadata: text("metadata", { mode: "json" }).$type<SongMetadata>().notNull(),
-  isBonus: integer("isBonus", { mode: "boolean" }).notNull().default(false),
+  isBonus: integer("isBonus", { mode: "boolean" }).default(false),
   mysteryOrder: integer("mysteryOrder").notNull().default(0),
-  usingCustomDesigners: integer("usingCustomDesigners", { mode: "boolean" }).notNull().default(false),
+  usingCustomDesigners: integer("usingCustomDesigners", { mode: "boolean" }).default(false),
   ...timestampTableColumns,
 });
