@@ -32,10 +32,14 @@ type Question = {
   answers: string[];
 };
 
+function escapeParens(s: string): string {
+  return s.replace(/\\/g, "\\\\").replace(/\)/g, "\\)").replace(/\(/g, "\\(");
+}
+
 function printQuestions(questions: Question[]): string {
-  let result = "";
+  let result = "标题\n\n简介\n\n";
   for (const q of questions) {
-    result += `${q.title}[${q.type}][必答][答案：${q.answers.join("、")}][分数：${q.scores.join("、")}][${q.scoring}](${q.description})\n`;
+    result += `${q.title}[${q.type}][必答][答案：${q.answers.join("、")}][分数：${q.scores.join("、")}][${q.scoring}](${escapeParens(q.description)})\n`;
 
     for (const option of q.options) {
       result += `${option.label}\n`;
