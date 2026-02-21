@@ -2,6 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
+import { customDesignerTable } from "@/db/schemas/custom-designer-table";
 import { designerTable } from "@/db/schemas/designer-table";
 import { songsTable } from "@/db/schemas/songs-table";
 import { usersTable } from "@/db/schemas/users-table";
@@ -51,10 +52,11 @@ function printQuestions(questions: Question[]): string {
 }
 
 export async function txQuestionnaire() {
-  const [songs, users, designers] = await Promise.all([
+  const [songs, users, designers, customDesigners] = await Promise.all([
     db.select().from(songsTable).where(eq(songsTable.isBonus, false)),
     db.select().from(usersTable),
     db.select().from(designerTable),
+    db.select().from(customDesignerTable),
   ]);
 
   const questions: Question[] = [];
@@ -72,6 +74,42 @@ export async function txQuestionnaire() {
   });
 
   for (const song of songs) {
+    if (song.usingCustomDesigners) {
+      const customForSong = customDesigners.filter((c) => c.songId === song.id);
+      if (customForSong.length === 0) {
+        continue;
+      }
+      const options = customForSong.map((c) => ({
+        id: c.id,
+        label: c.label,
+      }));
+      shuffle(options);
+      const answers = customForSong
+        .filter((c) => c.role === "real")
+        .map((c) => {
+          const optionIndex = options.findIndex((o) => o.id === c.id);
+          return String.fromCharCode(65 + optionIndex);
+        });
+      const { metadata } = song;
+      const chartDesigners = metadata.difficulties
+        .filter((d) => d.rating > 0)
+        .map((d) => {
+          return `${classMap[d.ratingClass]}${d.rating}${d.ratingPlus ? "+" : ""}: ${d.chartDesigner}`;
+        })
+        .join("\n");
+      const question: Question = {
+        title: `${getLocale(metadata.title_localized)} - ${getLocale(metadata.artist_localized) ?? metadata.artist}`,
+        description: `**ID: ${metadata.id}**\n${chartDesigners}`,
+        type: answers.length > 1 ? "多选题" : "单选题",
+        scoring: answers.length > 1 ? "部分" : "全部",
+        options,
+        scores: new Array(answers.length).fill(1),
+        answers,
+      };
+      questions.push(question);
+      continue;
+    }
+
     const assignedUser = designers
       .filter((s) => s.songId === song.id)
       .map((s) => {

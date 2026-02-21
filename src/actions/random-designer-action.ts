@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
@@ -15,7 +15,15 @@ export async function randomAssignDesigners() {
   }
 
   const [songs, users, designers] = await Promise.all([
-    db.select().from(songsTable).where(eq(songsTable.isBonus, false)),
+    db
+      .select()
+      .from(songsTable)
+      .where(
+        and(
+          eq(songsTable.isBonus, false),
+          eq(songsTable.usingCustomDesigners, false),
+        ),
+      ),
     db.select().from(usersTable),
     db.select().from(designerTable),
   ]);

@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { and, eq } from "drizzle-orm";
 import { IdSchema } from "@/actions/schemas/common-action-schema";

@@ -6,8 +6,7 @@ import ThemeProvider from "@/components/provider/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
-  title: "无名战 2025",
-  description: "这是一个描述",
+  title: "无名战管理系统",
 };
 
 export default function RootLayout({

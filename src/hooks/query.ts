@@ -1,12 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllSongs } from "@/actions/song-action";
 import { getAllDesigners, getSomeDesigners } from "@/actions/designer-action";
+import {
+  getAllCustomDesigners,
+  getCustomDesignersBySongId,
+} from "@/actions/custom-designer-action";
 import { getAllUsers } from "@/actions/user-action";
 
 export const QUERY_KEYS = {
   USERS: "USERS",
   SONGS: "SONGS",
   DESIGNERS: "DESIGNERS",
+  CUSTOM_DESIGNERS: "CUSTOM_DESIGNERS",
 };
 
 export function useAllUsersQuery() {
@@ -40,6 +45,25 @@ export function useSomeDesignersQuery(songId: number) {
   return useQuery({
     queryKey: [QUERY_KEYS.DESIGNERS, songId],
     queryFn: () => getSomeDesigners(songId),
+    staleTime: 10 * 60 * 1000,
+  });
+}
+
+export function useAllCustomDesignersQuery({
+  enabled = true,
+}: { enabled?: boolean } | undefined = {}) {
+  return useQuery({
+    enabled,
+    queryKey: [QUERY_KEYS.CUSTOM_DESIGNERS],
+    queryFn: getAllCustomDesigners,
+    staleTime: 10 * 60 * 1000,
+  });
+}
+
+export function useCustomDesignersBySongIdQuery(songId: number) {
+  return useQuery({
+    queryKey: [QUERY_KEYS.CUSTOM_DESIGNERS, songId],
+    queryFn: () => getCustomDesignersBySongId(songId),
     staleTime: 10 * 60 * 1000,
   });
 }

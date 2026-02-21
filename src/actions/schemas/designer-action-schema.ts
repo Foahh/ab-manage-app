@@ -1,4 +1,4 @@
-﻿import { z } from "zod";
+import { z } from "zod";
 import { IdSchema } from "@/actions/schemas/common-action-schema";
 
 export const DesignerRoles = ["real", "fake_assigned", "fake_random"] as const;
@@ -20,7 +20,6 @@ export const MultipleDesignersSchema = z
       z.object({
         userId: IdSchema.optional(),
         role: DesignerRoleEnum,
-        isNew: z.boolean().optional(),
       }),
     ),
   })
